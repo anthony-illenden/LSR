@@ -75,6 +75,22 @@ ax.add_feature(cfeature.STATES.with_scale('50m'), alpha=.75)
 ax.add_feature(cfeature.BORDERS.with_scale('50m'), linestyle=':', linewidth=0.5)
 ax.add_feature(USCOUNTIES.with_scale('5m'), linewidth=0.25, alpha=0.5)
 
+colors = {'SV': 'yellow', 'TO': 'red', 'FF': 'green', 'MA': 'orange', 'DS': 'brown'}
+zorders = {'TO': 4, 'SV': 3, 'MA': 1}
+
+for index, row in df.iterrows():
+    geometry = row['geometry']
+    event_id = row['eventid']
+    if geometry:
+        try:
+            geom_obj = shape(geometry)
+            ax.add_geometries([geom_obj], crs=ccrs.PlateCarree(), edgecolor='black', facecolor=colors.get(row['phenomena'], 'gray'), lw=1, alpha=0.75, zorder=zorders.get(row['phenomena'], 2))
+            centroid = geom_obj.centroid
+            #ax.text(centroid.x, centroid.y, str(event_id), transform=ccrs.PlateCarree(), fontsize=8, ha='center', va='center')
+        except Exception as e:
+            print(f"Error processing geometry at index {index}: {e}")
+
+
 for i in range(len(df_wind['Speed'])):
     value = df_wind['Speed'][i]
     if value != 'UNK':
@@ -85,34 +101,23 @@ for i in range(len(df_wind['Speed'])):
 
 for index, row in df_hail.iterrows():
     if row['Size'] >= 200:
-        ax.scatter(row['Lon'], row['Lat'], transform=ccrs.PlateCarree(), marker='^', c='black', alpha=0.7, s=150, zorder=2, label='Large Hail Report (2"+)')
+        ax.scatter(row['Lon'], row['Lat'], transform=ccrs.PlateCarree(), marker='^', c='black', alpha=0.9, s=150, zorder=2, label='Large Hail Report (2"+)')
     else:
-        ax.scatter(row['Lon'], row['Lat'], transform=ccrs.PlateCarree(), c='green', alpha=0.7, s=150, zorder=2, label='Hail Report')
+        ax.scatter(row['Lon'], row['Lat'], transform=ccrs.PlateCarree(), c='green', alpha=0.9, s=150, zorder=2, label='Hail Report')
 
 for index, row in df_wind.iterrows():
     if (row['Speed'] != 'UNK' and row['Speed'] > 65):
-        ax.scatter(row['Lon'], row['Lat'], transform=ccrs.PlateCarree(), marker='s', c='black', alpha=0.7, s=150, zorder=2, label='High Wind Report (65KT+)')
+        ax.scatter(row['Lon'], row['Lat'], transform=ccrs.PlateCarree(), marker='s', c='black', alpha=0.9, s=150, zorder=2, label='High Wind Report (65KT+)')
     else:
-        ax.scatter(row['Lon'], row['Lat'], transform=ccrs.PlateCarree(), c='blue', alpha=0.7, s=150, zorder=2, label='Wind Report')
+        ax.scatter(row['Lon'], row['Lat'], transform=ccrs.PlateCarree(), c='blue', alpha=0.9, s=150, zorder=2, label='Wind Report')
 
-ax.scatter(df_tor['Lon'].astype(float), df_tor['Lat'].astype(float), transform=ccrs.PlateCarree(), c='red', label='Tornado Reports', s=150, zorder=2)
+ax.scatter(df_tor['Lon'].astype(float), df_tor['Lat'].astype(float), transform=ccrs.PlateCarree(), c='red', label='Tornado Reports', s=150, zorder=4)
 
 handles, labels = ax.get_legend_handles_labels()
 unique_labels = list(set(labels))
 unique_handles = [handles[labels.index(label)] for label in unique_labels]
 plt.legend(unique_handles, unique_labels, loc='upper right')
 
-colors = {'SV': 'yellow', 'TO': 'red', 'FF': 'green', 'MA': 'orange', 'DS': 'brown'}
-zorders = {'TO': 4, 'SV': 3, 'MA': 1}
 
-for index, row in df.iterrows():
-    geometry = row['geometry']
-    if geometry:
-        try:
-            geom_obj = shape(geometry)
-            ax.add_geometries([geom_obj], crs=ccrs.PlateCarree(), edgecolor='black', facecolor=colors.get(row['phenomena'], 'gray'), lw=1, alpha=0.5, zorder=zorders.get(row['phenomena'], 2))
-        except Exception as e:
-            print(f"Error processing geometry at index {index}: {e}")
-
-plt.title('NWS DTX WFO Warnings and SPC LSR Valid for 6/15/2023')
+plt.title('NWS OUN WFO Warnings and SPC LSRs Valid for 2/26/2023')
 plt.show()
