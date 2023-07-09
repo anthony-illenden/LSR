@@ -13,11 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon as mplPolygon
 from cartopy.mpl.geoaxes import GeoAxes
-import pandas as pd
 from metpy.plots import USCOUNTIES
-import cartopy.crs as ccrs
-import cartopy. feature as cfeature
-import matplotlib.pyplot as plt
 import datetime
 
 tor_url = 'https://www.spc.noaa.gov/climo/reports/230615_rpts_torn.csv'
