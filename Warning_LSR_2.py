@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jul  9 13:11:15 2023
-
-@author: Tony
-"""
-
 import pandas as pd
 import requests
 import cartopy.crs as ccrs
