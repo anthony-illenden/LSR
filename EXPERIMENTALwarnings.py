@@ -118,7 +118,7 @@ for index, row in df.iterrows():
     if geometry:
         if geometry['type'] == 'Polygon':
             coordinates = geometry['coordinates']
-            if isinstance(coordinates[0][0], float):  # Handle single coordinate pair
+            if isinstance(coordinates[0][0], float): 
                 coordinates = [coordinates]
             polygon = Polygon(coordinates[0])
             phenomena = row['phenomena']
@@ -129,7 +129,7 @@ for index, row in df.iterrows():
             polygons = geometry['coordinates']
             valid_polygons = []
             for coords in polygons:
-                if coords and isinstance(coords[0][0], float):  # Filter out empty or invalid polygons
+                if coords and isinstance(coords[0][0], float): 
                     valid_polygons.append(coords)
             if not valid_polygons:
                 continue
